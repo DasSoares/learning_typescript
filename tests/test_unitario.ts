@@ -1,4 +1,4 @@
-import FetchAPI from "../fetchData";
+import FetchAPI from "../services/requests/fetchData";
 
 interface cepData {
   cep: string;

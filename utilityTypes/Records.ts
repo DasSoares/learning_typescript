@@ -16,12 +16,13 @@ const user: Record<Profile, number> = {
 
 interface User {
   name: string;
+  lastname?: string;
   email: string | null;
 }
 
 const users: Record<number, User> = {
-  1: { name: "Danilo", email: "danilo@email.com" },
-  2: { name: "Soares", email: null },
+  1: { name: "Danilo", lastname: "Soares", email: "danilo@email.com" },
+  2: { name: "Carlos", email: null },
 };
 
 console.log(users[1].email);

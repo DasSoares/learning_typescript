@@ -12,4 +12,8 @@ function fib(n: number): number {
   return first;
 }
 
-console.log(fib(50));
+const init = Date.now();
+console.log(fib(100));
+const end = Date.now();
+const tempo = new Date(end - init).toISOString().split("T")[1].slice(0, -5);
+console.log(`Tempo de execução: ${tempo}`);
