@@ -1,31 +1,32 @@
 import { Redis } from "ioredis";
-import { promisify } from "util";
+import { exit } from "process";
 
-const redisClient = new Redis();
+const redisClient = new Redis({
+  host: "localhost",
+  port: 6379,
+});
 
-/**
- * Obtém dados do Redis
- * @param key Obtém os dados da chave armazenada
- * @returns string | null | undefined
- */
-function getRedis(key: string) {
-  const syncRedisGet = promisify(redisClient.get).bind(redisClient);
-  return syncRedisGet(key);
-}
+redisClient.on("connect", () => {
+  console.info("Redis conectado");
+});
 
-/**
- * Define dados no Redis
- * @param key Chave do registro que salvará no Redis
- * @param value Informação para salvar (enviar em string mesmo que seja um json)
- * @retruns unknown
- */
-function setRedis(key: string, value: string) {
-  const syncRedisSet = promisify(redisClient.set).bind(redisClient);
-  return syncRedisSet(key, value);
-}
+redisClient.on("error", () => {
+  console.warn("Erro ao conectar ao redis");
+});
 
 async function main() {
-  await setRedis("mykey", "Olá Redis!");
-  const mykey = await getRedis("mykey");
-  console.log("minha chave:", mykey);
+  const key = "carro";
+  const carro = {
+    nome: "Mazda",
+    modelo: "rx-7",
+  };
+  const getCarroBefore = await redisClient.get(key);
+  console.log("Carro antes", getCarroBefore);
+  await redisClient.set("carro", JSON.stringify(carro));
+  const getCarroAfter = await redisClient.get(key);
+  console.log("Carro depois", getCarroAfter);
+  redisClient.del(key);
+  exit(1);
 }
+
+main();
